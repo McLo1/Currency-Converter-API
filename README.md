@@ -23,3 +23,7 @@ A consulta precisa de acesso à internet. Na resposta, `base` identifica a moeda
 1. O [controlador v1](controller/CurrencyV1Controller.cs) recebe `GET /api/v1/currency/{baseCurrency}` e converte o código da moeda para maiúsculas.
 2. O [serviço de câmbio](services/CurrencyService.cs) consulta o provedor, verifica o status HTTP e desserializa a resposta.
 3. O [modelo de resposta](models/CurrencyApiResponse.cs) define os campos devolvidos ao cliente.
+
+## Teste de integração
+
+Execute `dotnet test system.sln` na raiz. O teste chama a rota v1 pela interface HTTP da aplicação, substitui o provedor externo por uma resposta fixa e verifica a moeda-base e a taxa devolvidas. O mesmo teste está configurado para rodar em pull requests e em pushes na `main`.
