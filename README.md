@@ -1,74 +1,25 @@
-📘 Currency Converter API — .NET 8
-# 💱 Currency Converter API — .NET 8
+# API de taxas de câmbio
 
-Projeto de estudo desenvolvido em **.NET 8** com o objetivo de aprender **consumo de APIs externas**, organização de código backend, uso de **DTOs**, **Swagger** e **versionamento de API**.
+Projeto de estudo em C# e ASP.NET Core 8. Informe uma moeda-base para consultar suas taxas de câmbio. A API obtém os dados da ExchangeRate-API via `HttpClient` e devolve a moeda-base e um dicionário de taxas.
 
-A API consome uma API pública de câmbio, trata os dados e disponibiliza endpoints para **consulta e conversão de moedas**.
+## Executar localmente
 
----
+Com o SDK do .NET 8 instalado, execute na raiz do repositório:
 
-## 🎯 Objetivo
+```bash
+dotnet run --launch-profile http
+```
 
-Aprender e praticar:
+Abra a [documentação Swagger](http://localhost:5181/swagger) ou consulte as taxas do dólar em outro terminal:
 
-- Consumo de APIs externas com HttpClient
-- Organização de projetos backend
-- Uso de DTOs
-- Versionamento de APIs
-- Documentação com Swagger
+```bash
+curl http://localhost:5181/api/v1/currency/USD
+```
 
----
+A consulta precisa de acesso à internet. Na resposta, `base` identifica a moeda de referência e `rates` associa cada código de moeda à taxa de uma unidade da base. Por exemplo, para a base USD, `rates.BRL` representa o valor de um dólar em reais.
 
-## 🚀 Funcionalidades
+## Como a consulta funciona
 
-### 🔹 API v1
-- Endpoint simples para testes e versionamento.
-
-### 🔹 API v2
-- Consulta de taxas de câmbio.
-- Conversão de valores entre moedas.
-
----
-
-## 📌 Exemplo de uso
-
-```http
-GET /api/v2/currency/convert?from=USD&to=BRL&amount=100
-
-
-Resposta:
-
-{
-  "from": "USD",
-  "to": "BRL",
-  "amount": 100,
-  "rate": 5.02,
-  "result": 502.00
-}
-
-🛠️ Tecnologias
-
-.NET 8
-
-ASP.NET Core Web API
-
-Swagger
-
-API Versioning
-
-HttpClient
-
-DTO Pattern
-
-▶️ Como executar
-dotnet restore
-dotnet run
-
-
-Swagger:
-
-http://localhost:5181/swagger
-
-📝 Observação
-
-Projeto com foco em aprendizado e prática, podendo ser expandido futuramente com cache, autenticação, rate limit e outras melhorias.
+1. O [controlador v1](controller/CurrencyV1Controller.cs) recebe `GET /api/v1/currency/{baseCurrency}` e converte o código da moeda para maiúsculas.
+2. O [serviço de câmbio](services/CurrencyService.cs) consulta o provedor, verifica o status HTTP e desserializa a resposta.
+3. O [modelo de resposta](models/CurrencyApiResponse.cs) define os campos devolvidos ao cliente.
